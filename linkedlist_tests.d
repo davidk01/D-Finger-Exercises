@@ -1,0 +1,41 @@
+import linkedlist;
+
+void main() {
+  auto linked_list = new LinkedList!(uint);
+  assert(linked_list.Length == 0, "Empty list has non-zero length.");
+  linked_list.Insert(1);
+  assert(linked_list.Length == 1, "Adding an element did not increase the length of the list.");
+  assert(linked_list.Head.value == 1, "Head element does not have value equal to 1.");
+  assert(linked_list.Tail.value == 1, "Tail element does not have value equal to 1.");
+  assert(linked_list.Current.value == 1, "Current element is not pointing at 1.");
+  assert(linked_list.Current == linked_list.Head, "Current and head should be the same.");
+  assert(linked_list.Head == linked_list.Tail, "Head and tail should be the same.");
+  linked_list.Insert(2);
+  assert(linked_list.Tail.value == 2, "Tail value should be 2.");
+  assert(linked_list.Current.value == 1, "Current element should be 1 since we haven't advanced.");
+  assert(linked_list.Head.Next == linked_list.Tail, "Head should be pointing at tail in a two element list.");
+  linked_list.Advance();
+  assert(linked_list.Current.value == 2, "Current element should be 2 because we just advanced.");
+  assert(linked_list.Tail.value == 2, "Tail value is still 2.");
+  assert(linked_list.Current == linked_list.Tail, "Current and tail should be the same now.");
+  assert(!linked_list.CanAdvance(), "We are at the tail so we can not advance.");
+  linked_list.Insert(3);
+  assert(linked_list.Tail.value == 3, "We just inserted a new value so tail value should be 3.");
+  assert(linked_list.Current.value == 2, "Current value should be 2 since we haven't advanced.");
+  assert(linked_list.CanAdvance(), "We just added an element so we should be able to advance.");
+  linked_list.Advance();
+  assert(!linked_list.CanAdvance(), "Once again we should not be able to advance.");
+  assert(linked_list.Current == linked_list.Tail, "Current should be at the tail.");
+  assert(linked_list.Current.value == 3, "Current value should be 3 since we just advanced.");
+  linked_list.Rewind();
+  assert(linked_list.Current == linked_list.Head, "We just rewound so head and current element must be the same.");
+  linked_list.RemoveNext();
+  assert(linked_list.Length == 2, "We just removed an element so length must be 2.");
+  assert(linked_list.Tail.value == 3, "Tail should point to 3.");
+  assert(linked_list.Head.Next == linked_list.Tail, "Head should be pointing at the tail.");
+  linked_list.Insert(2);
+  linked_list.Advance();
+  assert(linked_list.Current.value == 2, "We just advanced to the second element which should be 2.");
+  linked_list.RemoveNext();
+  assert(linked_list.Tail.value == 2, "Tail should be pointing to 2 since 3 is gone.");
+}
