@@ -49,7 +49,8 @@ final class LinkedList(T) {
   }
   
   void Advance() {
-    if (current.next !is null) {
+    assert(length > 0, "Can not advance an empty list.");
+    if (length > 0 && current.next !is null) {
       current = current.next;
     }
   }
