@@ -1,10 +1,9 @@
-final class LinkedList(T) {
+final class DoublyLinkedList(T) {
   private class Node {
     T value;
     private Node next;
+    private Node previous;
     
-    this() {}
-
     this(in T element) {
       value = element;
     }
@@ -12,12 +11,15 @@ final class LinkedList(T) {
     @property Node Next() {
       return next;
     }
+    
+    @property Node Previous() {
+      return previous;
+    }
   }
   
-  private ulong length = 0;
-  private Node current;
+  private ulong length;
   private Node head;
-  private Node tail;
+  private Node current;
   
   @property ulong Length() {
     return length;
@@ -27,16 +29,8 @@ final class LinkedList(T) {
     return head;
   }
   
-  @property Node Tail() {
-    return tail;
-  }
-  
   @property Node Current() {
     return current;
-  }
-  
-  @property bool CanAdvance() {
-    return current !is null && current.next !is null;
   }
   
   void Rewind() {
@@ -44,27 +38,33 @@ final class LinkedList(T) {
   }
   
   bool Advance() {
-    if (length > 0 && current.next !is null) {
-      current = current.next;
-      return true;
+    if (length == 0 || current.next is null) {
+      return false;
     }
-    return false;
+    current = current.next;
+    return true;
+  }
+  
+  bool Retreat() {
+    if (length == 0 || current.previous is null) {
+      return false;
+    }
+    current = current.previous;
+    return true;
   }
   
   void Insert(in T element) {
     auto new_node = new Node(element);
     if (length == 0) {
       head = new_node;
-      tail = head;
       current = head;
     } else {
-      if (current.next is null) {
-        current.next = new_node;
-        tail = new_node;
-      } else {
-        auto next_element = current.next;
-        current.next = new_node;
-        new_node.next = next_element;
+      auto nxt = current.next;
+      new_node.previous = current;
+      new_node.next = nxt;
+      current.next = new_node;
+      if (nxt !is null) {
+        nxt.previous = new_node;
       }
     }
     length++;
@@ -72,10 +72,10 @@ final class LinkedList(T) {
   
   bool RemoveNext() {
     if (length > 0 && current.next !is null) {
-      auto toLink = current.next.next;
-      current.next = toLink;
-      if (toLink is null) {
-        tail = current;
+      auto to_link = current.next.next;
+      current.next = to_link;
+      if (to_link !is null) {
+        to_link.previous = current;
       }
       length--;
       return true;
