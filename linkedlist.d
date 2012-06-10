@@ -82,4 +82,9 @@ final class LinkedList(T) {
     }
     return false;
   }
+  
+  unittest {
+    import std.stdio;   
+    writefln("ha");
+  }
 }
